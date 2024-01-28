@@ -1,15 +1,15 @@
-const Hapi = require('@hapi/hapi');
-const Jwt = require('@hapi/jwt');
-const ClientError = require('../../Commons/exceptions/ClientError');
-const DomainErrorTranslator = require('../../Commons/exceptions/DomainErrorTranslator');
-const users = require('../../Interfaces/http/api/users');
-const authentications = require('../../Interfaces/http/api/authentications');
-const threads = require('../../Interfaces/http/api/threads');
-const threadComments = require('../../Interfaces/http/api/threads/comments');
-const threadCommentReplies = require('../../Interfaces/http/api/threads/comments/replies');
-const threadCommentLikes = require('../../Interfaces/http/api/threads/comments/likes');
+const Hapi = require("@hapi/hapi");
+const Jwt = require("@hapi/jwt");
+const ClientError = require("../../Commons/exceptions/ClientError");
+const DomainErrorTranslator = require("../../Commons/exceptions/DomainErrorTranslator");
+const users = require("../../Interfaces/http/api/users");
+const authentications = require("../../Interfaces/http/api/authentications");
+const threads = require("../../Interfaces/http/api/threads");
+const threadComments = require("../../Interfaces/http/api/threads/comments");
+const threadCommentReplies = require("../../Interfaces/http/api/threads/comments/replies");
+const threadCommentLikes = require("../../Interfaces/http/api/threads/comments/likes");
 
-const createServer = async (container) => {
+const createServer = async container => {
   const server = Hapi.server({
     host: process.env.HOST,
     port: process.env.PORT,
@@ -23,7 +23,7 @@ const createServer = async (container) => {
   ]);
 
   // mendefinisikan strategy autentikasi jwt
-  server.auth.strategy('forumapp_jwt', 'jwt', {
+  server.auth.strategy("forumapp_jwt", "jwt", {
     keys: process.env.ACCESS_TOKEN_KEY,
     verify: {
       aud: false,
@@ -31,7 +31,7 @@ const createServer = async (container) => {
       sub: false,
       maxAgeSec: process.env.ACCESS_TOKEN_AGE,
     },
-    validate: (artifacts) => ({
+    validate: artifacts => ({
       isValid: true,
       credentials: {
         id: artifacts.decoded.payload.id,
@@ -66,7 +66,15 @@ const createServer = async (container) => {
     },
   ]);
 
-  server.ext('onPreResponse', (request, h) => {
+  server.route({
+    method: "GET",
+    path: "/",
+    handler: () => ({
+      value: "Hello world",
+    }),
+  });
+
+  server.ext("onPreResponse", (request, h) => {
     // mendapatkan konteks response dari request
     const { response } = request;
 
@@ -77,7 +85,7 @@ const createServer = async (container) => {
       // penanganan client error secara internal.
       if (translatedError instanceof ClientError) {
         const newResponse = h.response({
-          status: 'fail',
+          status: "fail",
           message: translatedError.message,
         });
         newResponse.code(translatedError.statusCode);
@@ -91,8 +99,8 @@ const createServer = async (container) => {
 
       // penanganan server error sesuai kebutuhan
       const newResponse = h.response({
-        status: 'error',
-        message: 'terjadi kegagalan pada server kami',
+        status: "error",
+        message: "terjadi kegagalan pada server kami",
       });
       newResponse.code(500);
       return newResponse;
