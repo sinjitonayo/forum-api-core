@@ -1,0 +1,10 @@
+node_modules
+package-lock.json
+.idea
+.vscode
+config/database/test.json
+coverage
+.env
+local.env
+server.env
+*.pem
