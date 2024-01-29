@@ -16,7 +16,7 @@ describe("HTTP server", () => {
   });
 
   describe("when GET /", () => {
-    it("should return 200 and hello dicoding", async () => {
+    it("should return 200 and hello stikom", async () => {
       // Arrange
       const server = await createServer({});
 
@@ -29,7 +29,7 @@ describe("HTTP server", () => {
       // Assert
       const responseJson = JSON.parse(response.payload);
       expect(response.statusCode).toEqual(200);
-      expect(responseJson.value).toEqual("Hello dicoding");
+      expect(responseJson.value).toEqual("Hello stikom");
     });
   });
 
